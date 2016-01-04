@@ -2,3 +2,4 @@
 devpi_virtualenv: "{{ ansible_env.HOME }}/.virtualenvs/devpi"
 devpi_port: "3141"
 devpi_wheelhouse: "{{ansible_env.HOME}}/.pip/wheelhouse"
+devpi_user: devpi

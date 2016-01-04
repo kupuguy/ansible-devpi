@@ -2,6 +2,7 @@
 - name: Create devpi virtualenv
   command: virtualenv {{devpi_virtualenv}}
            creates={{devpi_virtualenv}}
+
 - name: Install packages
   pip: name={{item}}
        virtualenv={{devpi_virtualenv}}
@@ -9,21 +10,35 @@
   with_items:
     - devpi
     - wheel
-- name: Install monit
-  apt: name=monit state=latest
-  sudo: yes
-- name: Make sure monit is running
-  service: name=monit state=running enabled=yes
-  sudo: yes
-- name: Configure monit to run devpi
-  sudo: yes
-  template: src=devpi-monit.conf
-            dest=/etc/monit/conf.d/devpi.conf
-  notify:
-    - restart monit
-- name: Create ~/.pip/wheelhouse
+
+- name: devpi user is present
+  user:
+    name: "{{devpi_user}}"
+    state: present
+    system: yes
+
+- name: Create devpi wheelhouse
   file: path={{devpi_wheelhouse}}
         state=directory
-- name: ~/.pip.conf
+
+- name: Create ~/.pip
+  file: path={{ansible_env.HOME}}/.pip
+        state=directory
+
+- name: ~/.pip/pip.conf
   template: src=pip.conf
             dest={{ansible_env.HOME}}/.pip/pip.conf
+
+- name: devpi systemd service manifest is present
+  template:
+    src: devpi.service
+    dest: /usr/lib/systemd/system/devpi.service
+    owner: root
+    group: root
+    mode: "755"
+  notify:
+    - devpi reload systemd
+    - restart devpi
+
+- name: Start devpi
+  service: name=devpi state=started enabled=yes

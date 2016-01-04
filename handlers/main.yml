@@ -1,4 +1,7 @@
 ---
-- name: restart monit
-  service: name=monit state=restarted
-  sudo: yes
+- name: devpi reload systemd
+  become: yes
+  command: systemctl daemon-reload
+
+- name: restart devpi
+  service: name=devpi state=restarted

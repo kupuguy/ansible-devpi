@@ -1,0 +1,15 @@
+[Unit]
+Description=Devpi daemon
+Documentation=
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+Type=forking
+PIDFile={{ devpi_user }}/.devpi/server/.xproc/devpi-server/xprocess.PID
+Restart=always
+ExecStart={{devpi_virtualenv}}/bin/devpi-server  --start --port {{ devpi_port }}
+ExecStop={{devpi_virtualenv}}/bin/devpi-server  --stop
+User={{ devpi_user }}
+Group={{ devpi_user }}
+WorkingDirectory={{devpi_wheelhouse}}
