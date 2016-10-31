@@ -4,4 +4,4 @@
   command: systemctl daemon-reload
 
 - name: restart devpi
-  service: name=devpi state=restarted
+  service: name=devpi enabled=yes state=restarted

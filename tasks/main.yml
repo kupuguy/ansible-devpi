@@ -3,13 +3,25 @@
   command: virtualenv {{devpi_virtualenv}}
            creates={{devpi_virtualenv}}
 
+# - name: Remove obsolete packages
+#   pip: name={{item}}
+#        virtualenv={{devpi_virtualenv}}
+#        state=absent
+#   with_items:
+#     - devpi
+
 - name: Install packages
   pip: name={{item}}
        virtualenv={{devpi_virtualenv}}
        state=present
   with_items:
-    - devpi
+    - devpi-server
+    - devpi-web
+    - devpi-client
     - wheel
+  notify:
+    - devpi reload systemd
+    - restart devpi
 
 - name: devpi user is present
   user:

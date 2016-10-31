@@ -13,3 +13,6 @@ ExecStop={{devpi_virtualenv}}/bin/devpi-server  --stop
 User={{ devpi_user }}
 Group={{ devpi_user }}
 WorkingDirectory={{devpi_wheelhouse}}
+
+[Install]
+WantedBy=multi-user.target
